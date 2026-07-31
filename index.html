@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzettini</title>
+    <!-- Importazione font Gaming Ultra-Minimal ed Eleganti -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Tema Chiaro Ultra-Pulito */
+            --bg-main: #f4f7f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent-color: #3b82f6;
+            --accent-hover: #1d4ed8;
+            --btn-text: #ffffff;
+            --overlay-opacity: 0.35;
+        }
+
+        [data-theme="dark"] {
+            /* Tema Scuro Notte Profonda */
+            --bg-main: #030712; 
+            --card-bg: #0b1329; 
+            --border-color: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #60a5fa;
+            --accent-hover: #93c5fd;
+            --btn-text: #030712;
+            --overlay-opacity: 0.15;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 60px 4%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            letter-spacing: -0.01em;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1600px;
+            position: relative;
+            margin-bottom: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 500;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            text-align: center;
+            background: linear-gradient(to right, var(--text-main), var(--text-muted));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Icona Switch Giorno/Notte minimale */
+        .theme-toggle-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-icon {
+            width: 26px;
+            height: 26px;
+            border: 2px solid var(--text-main);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transform: rotate(0deg);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .toggle-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background-color: var(--text-main);
+        }
+
+        [data-theme="dark"] .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Contenitore Griglia */
+        .grid-container {
+            width: 100%;
+            max-width: 1600px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        @media (min-width: 1550px) {
+            .grid-container {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        /* Effetto secondo piano */
+        .grid-container:hover .quiz-table {
+            opacity: var(--overlay-opacity);
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+
+        .grid-container .quiz-table:hover {
+            opacity: 1;
+            transform: scale(1.03) translateY(-4px);
+            border-color: var(--accent-color);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="dark"] .grid-container .quiz-table:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Struttura a Tabella singola */
+        .quiz-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            display: table;
+        }
+
+        .quiz-table tr {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .quiz-table td {
+            padding: 26px 24px;
+            display: block;
+        }
+
+        .col-header {
+            text-align: center;
+            padding-bottom: 0 !important;
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .quiz-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .col-info {
+            flex-grow: 1;
+            text-align: center;
+            padding-top: 10px !important;
+            padding-bottom: 14px !important;
+        }
+
+        .quiz-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .col-action {
+            padding-top: 0 !important;
+        }
+
+        .play-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .quiz-table:hover .play-btn {
+            background-color: var(--text-main);
+            color: var(--btn-text);
+            border-color: var(--text-main);
+        }
+
+        /* Ottimizzazioni Mobile */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+                letter-spacing: 4px;
+            }
+            header {
+                flex-direction: column;
+                gap: 30px;
+                margin-bottom: 40px;
+            }
+            .theme-toggle-btn {
+                position: static;
+            }
+            body {
+                padding: 40px 20px;
+            }
+            .grid-container:hover .quiz-table {
+                opacity: 1;
+                transform: none;
+            }
+            .grid-container .quiz-table:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Quizzettini</h1>
+        <button class="theme-toggle-btn" id="themeBtn" aria-label="Cambia modalità">
+            <div class="toggle-icon"></div>
+        </button>
+    </header>
+
+    <div class="grid-container">
+
+        <!-- 1. Angle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📐</span>
+                    <div class="quiz-title">Angle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina l'angolo geometrico corretto basandoti sui suggerimenti visivi quotidiani.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://angle.wtf/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 2. Crononews -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">⏳</span>
+                    <div class="quiz-title">CronoNews</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Ordina gli eventi storici e le notizie nel tempo. Riesci a indovinare l'anno esatto?</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.ed0.it/quiz/crononews/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 3. Flagle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🏴</span>
+                    <div class="quiz-title">Flagle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina la bandiera misteriosa del giorno scoprendo una tessera alla volta.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://flagle-game.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 4. Globle Game -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🌍</span>
+                    <div class="quiz-title">Globle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Trova la nazione misteriosa globale sfruttando i colori di prossimità sul mappamondo.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://globle-game.com/game" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 5. Neighborle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🗺️</span>
+                    <div class="quiz-title">Neighborle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina tutti i paesi confinanti dello stato selezionato senza commettere errori.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://neighborle.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 6. GeoGame -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📍</span>
+                    <div class="quiz-title">GeoGame</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Esplora mappe interattive e indovina la tua posizione geografica nel mondo.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.geogame.me/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 7. GeoTrivia -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">❓</span>
+                    <div class="quiz-title">GeoTrivia</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Metti alla prova la tua cultura geografica generale con quiz in lingua italiana.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://geotrivia.com/it" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 8. GeoRiddle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🧩</span>
+                    <div class="quiz-title">GeoRiddle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Risolvi gli enigmi geografici del giorno decifrando indizi complessi e dettagliati.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://georiddle.org/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 9. TimeGuessr -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📸</span>
+                    <div class="quiz-title">TimeGuessr</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina dove e quando è stata scattata una serie di fotografie storiche.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://timeguessr.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 10. ParolaChiave -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔑</span>
+                    <div class="quiz-title">ParolaChiave</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Trova la parola misteriosa nascosta che collega logica, intuito ed enigmistica.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.ed0.it/quiz/parolachiave/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 11. Wordle NYT -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🟩</span>
+                    <div class="quiz-title">Wordle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Il celebre gioco del New York Times: indovina la parola originale di 5 lettere in 6 tentativi.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.nytimes.com/games/wordle/index.html" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+<!-- 11b. Connections NYT -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🟪</span>
+                    <div class="quiz-title">Connections</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Il celebre rompicapo del NYT: dividi 16 parole in 4 gruppi logici basandoti su collegamenti nascosti.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.nytimes.com/games/connections" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 12. Wordle IT -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🇮🇹</span>
+                    <div class="quiz-title">Wordle IT</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">La versione localizzata in lingua italiana del classico rompicapo di parole quotidiano.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://pietroppeter.github.io/wordle-it/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 13. Don't Wordle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">❌</span>
+                    <div class="quiz-title">Don't Wordle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Una variante inversa: cerca di evitare a tutti i costi di indovinare la parola finale.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://dontwordle.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 14. Unwordle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔄</span>
+                    <div class="quiz-title">Unwordle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Lavora al contrario partendo dalla griglia finale completata per ricostruire i tentativi passati.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://unwordle.org/?daily=1" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 15. Foximax -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🦊</span>
+                    <div class="quiz-title">Foximax</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Una suite di rompicapi logici giornalieri e mini-sfide pensate per la mente.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://foximax.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 16. Word500 -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">💯</span>
+                    <div class="quiz-title">Word500</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina la parola segreta con l'aiuto di indizi cromatici avanzati e complessi.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://word500.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 17. Glyph -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔣</span>
+                    <div class="quiz-title">Glyph</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Trova la combinazione misteriosa decifrando simboli grafici e glifi minimalisti.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://glyph.today/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 18. Letterle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔤</span>
+                    <div class="quiz-title">Letterle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Il gioco minimale per eccellenza: devi semplicemente indovinare una singola lettera.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://edjefferson.com/letterle/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 19. Octordle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🐙</span>
+                    <div class="quiz-title">Octordle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Moltiplica la difficoltà: risolvi contemporaneamente ben 8 griglie di Wordle.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://wordleplay.com/it/octordle" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 20. Sedecordle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">💥</span>
+                    <div class="quiz-title">Sedecordle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Sfida estrema per esperti di parole: 16 griglie Wordle da risolvere in parallelo.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.sedecordle.com/?mode=daily" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 21. Duotrigordle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">👾</span>
+                    <div class="quiz-title">Duotrigordle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">La follia linguistica definitiva: 32 parole da indovinare contemporaneamente.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://duotrigordle.com/game/daily/normal" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 22. Contexto -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🧠</span>
+                    <div class="quiz-title">Contexto</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Trova la parola segreta guidato da un algoritmo che calcola la somiglianza contestuale.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://contexto.me/en/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 23. La Frase Fortunata -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🍀</span>
+                    <div class="quiz-title">FraseFortunata</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Rivelate le lettere nascoste e indovinate la frase misteriosa del giorno.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.ed0.it/quiz/it/lafrasefortunata/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 24. Nerdle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔢</span>
+                    <div class="quiz-title">Nerdle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Il Wordle per gli amanti della matematica: indovina l'equazione numerica corretta.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://nerdlegame.com/?v=20260618090747" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 25. Chess Daily -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">👑</span>
+                    <div class="quiz-title">ChessDaily</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Risolvi il puzzle tattico giornaliero ufficiale sulla piattaforma Chess.com.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.chess.com/daily" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 26. Birthdayle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🎂</span>
+                    <div class="quiz-title">Birthdayle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Usa gli indizi logici per indovinare la data di compleanno del personaggio misterioso.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://birthdayle.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 27. Timedle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">⏱️</span>
+                    <div class="quiz-title">Timedle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Sfida il fattore tempo e indovina l'elemento misterioso prima dello scadere del timer.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://timedle-daily-guess.lovable.app/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 28. Pokedle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔴</span>
+                    <div class="quiz-title">Pokedle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina il Pokémon del giorno sfruttando indizi su tipo, statistiche e generazione.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://pokedle.net/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 29. Pokedoku -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🃏</span>
+                    <div class="quiz-title">Pokedoku</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Riempi la griglia in stile sudoku incrociando correttamente le categorie Pokémon.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://pokedoku.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 30. Minecraftle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🧱</span>
+                    <div class="quiz-title">Minecraftle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Usa le ricette di crafting classiche per indovinare l'oggetto misterioso di Minecraft.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://minecraftle.zachmanson.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 31. Brickdle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🎨</span>
+                    <div class="quiz-title">Brickdle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina il set LEGO o la costruzione del giorno un mattoncino alla volta.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.brickdle.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 32. Talldle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📏</span>
+                    <div class="quiz-title">Talldle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Confronta le altezze e indovina le proporzioni degli oggetti proposti dal gioco.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.talldle.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 33. Elementle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🧪</span>
+                    <div class="quiz-title">Elementle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Trova l'elemento chimico segreto basandoti sulle proprietà della tavola periodica.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://elementlegame.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 34. Spotle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🎵</span>
+                    <div class="quiz-title">Spotle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina l'artista misterioso basandoti su generi, popolarità e dati di ascolto.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://spotle.io/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 35. Bandle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🎸</span>
+                    <div class="quiz-title">Bandle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Ascolta la traccia strumentale che si arricchisce e indovina la canzone corretta.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://bandle.app/menu" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 36. Artistle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">👩‍🎤</span>
+                    <div class="quiz-title">Artistle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Metti alla prova il tuo orecchio musicale e indovina l'artista del panorama odierno.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://artistle.io/en" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 37. Songless -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔇</span>
+                    <div class="quiz-title">Songless</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Indovina la traccia musicale senza traccia audio, sfruttando solo indizi grafici e testuali.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://lessgames.com/songless" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 38. Dialed -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📞</span>
+                    <div class="quiz-title">Dialed</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Risolvi le connessioni logiche giornaliere proposte in questa interfaccia ultra-pulita.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://dialed.gg/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 39. Cutle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">✂️</span>
+                    <div class="quiz-title">Cutle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Taglia, fraziona e trova la giusta combinazione geometrica in questo rompicapo.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://pfiffel.com/cutle/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 40. Futbol 11 -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">⚽</span>
+                    <div class="quiz-title">Futbol11</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Schiera e indovina la formazione calcistica ideale incrociando i trasferimenti storici.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://futbol-11.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 41. Play Football Games -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🏆</span>
+                    <div class="quiz-title">Football</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Accedi alla suite di mini-giochi giornalieri dedicati interamente al mondo del calcio.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://playfootball.games/#daily-games" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 42. Kinda Hard Golf -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">⛳</span>
+                    <div class="quiz-title">HardGolf</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Calcola traiettorie millimetriche e buche complesse in questo mini-gioco logico sul golf.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://kindahardgolf.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 43. Guess The Age -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">👴</span>
+                    <div class="quiz-title">GuessAge</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Osserva attentamente il volto dei personaggi famosi e prova a indovinarne l'età esatta.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://guesstheage.org/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 44. FoodGuessr -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🍔</span>
+                    <div class="quiz-title">FoodGuessr</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Esplora i piatti tradizionali e indovina l'origine geografica delle prelibatezze mondiali.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.foodguessr.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 45. La Scala Gioco -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🪜</span>
+                    <div class="quiz-title">LaScala</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Scala la sequenza logica giornaliera ordinando correttamente tutti gli indizi forniti.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://lascala-gioco.it/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 46. Auction Game -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🔨</span>
+                    <div class="quiz-title">Auction</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Il gioco ideato da Neal Fun: prova a indovinare il prezzo reale di quadri e oggetti rari all'asta.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://neal.fun/auction-game/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 47. Rankdle -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📊</span>
+                    <div class="quiz-title">Rankdle</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Guarda le clip di gameplay competitive di vari e-sports e prova a indovinare il rank del giocatore.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://rankdle.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 48. Higher or Lower -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">📈</span>
+                    <div class="quiz-title">HigherLower</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Quale termine o volume di ricerca è più popolare su Google? Scegli tra più alto o più basso.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.higherorlowergame.com/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+        <!-- 49. Totoquiz -->
+        <table class="quiz-table">
+            <tr>
+                <td class="col-header">
+                    <span class="card-icon">🎯</span>
+                    <div class="quiz-title">TotoQuiz</div>
+                </td>
+                <td class="col-info">
+                    <div class="quiz-desc">Pronostica e rispondi correttamente alle domande di cultura generale e pop in questa sfida.</div>
+                </td>
+                <td class="col-action">
+                    <a href="https://www.ed0.it/quiz/totoquiz/" target="_blank" class="play-btn">PLAY</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('themeBtn');
+        
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+
+</body>
+</html>
