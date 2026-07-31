@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quizzettini</title>
-    <!-- Importazione font Gaming Ultra-Minimal ed Eleganti -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Tema Chiaro Ultra-Pulito */
             --bg-main: #f4f7f9;
-            --bg-mostly-section: #eaf0f4; /* Sfondo stile footer differenziato */
+            --bg-mostly-section: #eaf0f4; 
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
             --text-main: #0f172a;
@@ -23,18 +21,17 @@
             --btn-text: #ffffff;
             --overlay-opacity: 0.35;
 
-            /* Colori delle Categorie */
             --color-parole: #22c55e;
             --color-geo: #3b82f6;
             --color-logica: #ef4444;
             --color-pop: #eab308;
             --color-mostly: #0f172a;
+            --color-fav: #ff9800;
         }
 
         [data-theme="dark"] {
-            /* Tema Scuro Notte Profonda */
             --bg-main: #030712; 
-            --bg-mostly-section: #070f21; /* Sfondo stile footer differenziato scuro */
+            --bg-mostly-section: #070f21; 
             --card-bg: #0b1329; 
             --border-color: #1e293b;
             --text-main: #f8fafc;
@@ -43,12 +40,72 @@
             --accent-hover: #93c5fd;
             --btn-text: #030712;
             --overlay-opacity: 0.15;
-
-            /* Colori Categorie Dark */
             --color-mostly: #60a5fa;
+            --color-fav: #ffb74d;
         }
 
-        /* Transizione fluida globale per il cambio tema giorno/notte */
+        /* HARDCORE MODE */
+        body.hardcore-glitch {
+            animation: glitchEffect 0.3s infinite;
+        }
+        body.hardcore-mode {
+            background-color: #1a0505 !important;
+            color: #ff3333 !important;
+            --bg-main: #1a0505;
+            --card-bg: #2d0b0b;
+            --border-color: #4a1212;
+            --text-main: #ff3333;
+            --text-muted: #aa4444;
+            --accent-color: #ff1111;
+        }
+        body.hardcore-mode h1 {
+            background: linear-gradient(to right, #ff0000, #ff5555) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+        #hardcore-bg-text {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Syncopate', sans-serif;
+            font-size: 6vw; 
+            font-weight: 700;
+            color: rgba(255, 0, 0, 0.15);
+            letter-spacing: 15px;
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+        }
+        body.hardcore-mode #hardcore-bg-text {
+            display: block;
+            animation: pulseHardcore 1.5s infinite ease-in-out;
+        }
+
+        body.hardcore-mode #dailyQuizBtn,
+        body.hardcore-mode #themeBtn,
+        body.hardcore-mode .counter-container {
+            display: none !important;
+        }
+
+        @keyframes glitchEffect {
+            0% { transform: translate(1px, 1px) skewX(0deg); filter: hue-rotate(0deg); }
+            20% { transform: translate(-1px, -1px) skewX(1deg); filter: hue-rotate(90deg); }
+            40% { transform: translate(2px, -1px) skewY(-1deg); }
+            60% { transform: translate(-2px, 2px) skewX(-2deg); }
+            80% { transform: translate(1px, -2px) skewY(2deg); filter: hue-rotate(180deg); }
+            100% { transform: translate(0px, 0px) skewX(0deg); filter: hue-rotate(0deg); }
+        }
+        @keyframes pulseHardcore {
+            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.95); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.95); }
+        }
+
         html, body {
             transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -69,28 +126,26 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
-            padding: 60px 0; /* Rimosso padding laterale per permettere alla sezione full-width sotto */
+            padding: 60px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             letter-spacing: -0.01em;
+            position: relative;
         }
 
-        /* ==========================================================
-           FEATURE AGGIUNTIVA: SCHERMATA DI CARICAMENTO (LOADER PREMIUM)
-           ========================================================== */
         #loader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--bg-main); /* Segue dinamicamente il tema */
+            background-color: var(--bg-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 99999; /* Superiore a qualsiasi carosello o elemento */
+            z-index: 99999;
             opacity: 1;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -113,13 +168,14 @@
             100% { opacity: 0.4; transform: scale(0.98); }
         }
 
-        header, .search-container, .filter-container, .category-section:not([data-sec-category="mostly"]) {
+        header, .search-container, .filter-container, .category-section:not([data-sec-category="mostly"]):not([data-sec-category="preferiti"]) {
             width: 92%;
             max-width: 1600px;
+            position: relative;
+            z-index: 1;
         }
 
         header {
-            position: relative;
             margin-bottom: 40px;
             display: flex;
             justify-content: center;
@@ -138,19 +194,39 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Icona Switch Giorno/Notte minimale */
-        .theme-toggle-btn {
+        .header-btn {
             position: absolute;
-            right: 10px;
             background: none;
             border: none;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 10;
+        }
+        
+        .daily-quiz-btn {
+            left: 10px;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 20px;
+            background-color: var(--card-bg);
+        }
+        .daily-quiz-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .theme-toggle-btn {
+            right: 10px;
+            width: 40px;
+            height: 40px;
         }
 
         .toggle-icon {
@@ -178,10 +254,26 @@
             transform: rotate(180deg);
         }
 
-        /* Contenitore e Barra di Ricerca */
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -25px;
+            margin-bottom: 30px;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        #completed-count {
+            color: var(--accent-color);
+        }
+
         .search-container {
             margin-bottom: 24px;
-            position: relative;
         }
 
         #searchBar {
@@ -203,7 +295,6 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        /* Contenitore Filtri Categorie */
         .filter-container {
             display: flex;
             gap: 12px;
@@ -224,6 +315,9 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .filter-btn:hover, .filter-btn.active {
@@ -232,12 +326,18 @@
             background-color: var(--card-bg);
         }
 
-        /* Struttura delle Sezioni per Categoria */
+        .filter-btn[data-filter="preferiti"].active, 
+        .filter-btn[data-filter="preferiti"]:hover {
+            color: var(--color-fav) !important;
+            border-color: var(--color-fav) !important;
+        }
+
         .category-section {
             margin-bottom: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         .category-heading {
@@ -252,11 +352,12 @@
             padding-bottom: 10px;
         }
 
-        /* Colori dinamici dei sottotitoli basati sulla categoria */
         [data-sec-category="parole"] .category-heading { color: var(--color-parole); }
         [data-sec-category="geo"] .category-heading { color: var(--color-geo); }
         [data-sec-category="logica"] .category-heading { color: var(--color-logica); }
         [data-sec-category="pop"] .category-heading { color: var(--color-pop); }
+        [data-sec-category="preferiti"] .category-heading { color: var(--color-fav); }
+        [data-sec-category="hardcore-sec"] .category-heading { color: #ff3333; }
 
         .category-heading::after {
             content: '';
@@ -270,10 +371,7 @@
             opacity: 0.4;
         }
 
-        /* SPECIFICHE AGGIUNTIVE: SEZIONE MOSTLY PLAYED STILE FOOTER */
         .category-section[data-sec-category="mostly"] {
-            width: 100%;
-            max-width: 100%;
             background-color: var(--bg-mostly-section);
             padding: 60px 4%;
             margin-bottom: 0;
@@ -281,26 +379,31 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* Font differenziato per il titolo premium */
         [data-sec-category="mostly"] .category-heading {
             color: var(--text-main);
             font-size: 1.6rem;
             font-weight: 700;
-            letter-spacing: 7px; /* Spaziatura aumentata rispetto agli altri */
+            letter-spacing: 7px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        /* Font differenziato e stile premium per i titoli del carosello */
         [data-sec-category="mostly"] .quiz-title {
             font-family: 'Syncopate', sans-serif;
             font-weight: 700;
-            letter-spacing: 2.5px; /* Un pelo più distanziato ed evidente */
+            letter-spacing: 2.5px;
             background: linear-gradient(45deg, var(--text-main), var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Tag delle Categorie nelle schede */
+        .category-tag-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
         .category-tag {
             display: inline-block;
             font-size: 0.6rem;
@@ -310,16 +413,48 @@
             letter-spacing: 1px;
             padding: 4px 8px;
             border-radius: 4px;
-            margin-bottom: 14px;
         }
 
-        /* Nuovi Colori Personalizzati dei Tag */
         .tag-parole { background-color: rgba(34, 197, 94, 0.12); color: var(--color-parole); }
         .tag-geo { background-color: rgba(59, 130, 246, 0.12); color: var(--color-geo); }
         .tag-logica { background-color: rgba(239, 68, 68, 0.12); color: var(--color-logica); }
         .tag-pop { background-color: rgba(234, 179, 8, 0.15); color: var(--color-pop); }
+        .tag-hardcore { background-color: rgba(255, 0, 0, 0.15); color: #ff3333; }
 
-        /* Contenitore Griglia standard */
+        .fav-btn, .done-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .fav-btn:hover {
+            transform: scale(1.08);
+            border-color: var(--color-fav);
+            color: var(--color-fav);
+        }
+        .done-btn:hover {
+            transform: scale(1.08);
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+        .quiz-table.is-favorite .fav-btn {
+            background-color: rgba(255, 152, 0, 0.12);
+            border-color: var(--color-fav) !important;
+            color: var(--color-fav) !important;
+        }
+        .quiz-table.completed .done-btn {
+            background-color: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e !important;
+            color: #22c55e !important;
+        }
+
         .grid-container {
             width: 100%;
             display: grid;
@@ -333,7 +468,6 @@
             }
         }
 
-        /* Effetto secondo piano applicato alla singola griglia attiva o al carosello */
         .grid-container:hover .quiz-table,
         .carousel-track:hover .quiz-table {
             opacity: var(--overlay-opacity);
@@ -354,7 +488,11 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
         }
 
-        /* STRUTTURA SPECIFICA CAROSELLO MOSTLY PLAYED */
+        body.hardcore-mode .grid-container .quiz-table:hover {
+            border-color: #ff3333 !important;
+            box-shadow: 0 12px 30px rgba(255, 0, 0, 0.25) !important;
+        }
+
         .carousel-wrapper {
             position: relative;
             width: 100%;
@@ -380,7 +518,6 @@
         .carousel-track .quiz-table {
             flex: 0 0 calc((100% - 48px) / 3); 
             max-width: calc((100% - 48px) / 3);
-            /* Piccola ombra permanente nel footer per farle staccare dallo sfondo */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); 
         }
 
@@ -388,7 +525,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
         }
 
-        /* Frecce Pulite Minimaliste (Senza Cerchio) */
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -418,7 +554,6 @@
         .carousel-btn.prev { left: 0; }
         .carousel-btn.next { right: 0; }
 
-        /* Struttura a Tabella singola */
         .quiz-table {
             width: 100%;
             height: 100%;
@@ -426,8 +561,19 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            overflow: hidden;
+            overflow: hidden; 
             display: table;
+            position: relative;
+        }
+
+        .quiz-table.completed {
+            border-color: #22c55e !important;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
+        }
+
+        body.hardcore-mode .quiz-table.completed {
+            border-color: #ff3333 !important;
+            box-shadow: 0 0 12px rgba(255, 0, 0, 0.4) !important;
         }
 
         .quiz-table tr {
@@ -503,7 +649,51 @@
             border-color: var(--text-main);
         }
 
-        /* Ottimizzazioni Mobile e Carosello responsivo */
+        body.hardcore-mode .quiz-table:hover .play-btn {
+            background-color: #ff3333 !important;
+            color: #1a0505 !important;
+            border-color: #ff3333 !important;
+        }
+        
+        body.hardcore-mode .category-section:not([data-sec-category="hardcore-sec"]) {
+            display: none !important;
+        }
+
+        #animation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 100000;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 10vw;
+            font-weight: 700;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        .animate-plus {
+            color: #22c55e;
+            text-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+            animation: popInAndOut 0.8s forwards ease-out;
+        }
+        .animate-minus {
+            color: #ef4444;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+            animation: popInAndOut 0.8s forwards ease-out;
+        }
+
+        @keyframes popInAndOut {
+            0% { opacity: 0; transform: scale(0.4); }
+            30% { opacity: 1; transform: scale(1.2); }
+            70% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.8) translateY(-50px); }
+        }
+
         @media (max-width: 992px) {
             .carousel-track .quiz-table {
                 flex: 0 0 calc((100% - 24px) / 2); 
@@ -512,93 +702,80 @@
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
-                letter-spacing: 4px;
-            }
-            header {
-                flex-direction: column;
-                gap: 30px;
-                margin-bottom: 24px;
-            }
-            .theme-toggle-btn {
-                position: static;
-            }
-            body {
-                padding: 40px 0;
-            }
-            .grid-container:hover .quiz-table,
-            .carousel-track:hover .quiz-table {
-                opacity: 1;
-                transform: none;
-            }
-            .grid-container .quiz-table:hover,
-            .carousel-track .quiz-table:hover {
-                transform: none;
-            }
-            .category-section {
-                margin-bottom: 40px;
-            }
-            .category-heading {
-                font-size: 1.1rem;
-            }
-            .carousel-wrapper {
-                padding: 0 35px;
-            }
-            .carousel-track .quiz-table {
-                flex: 0 0 100%; 
-                max-width: 100%;
-            }
-            .carousel-btn {
-                font-size: 1.6rem;
-                width: 30px;
-            }
-            [data-sec-category="mostly"] .category-heading {
-                font-size: 1.2rem;
-                letter-spacing: 4px;
-            }
-            .loader-content {
-                font-size: 1.1rem;
-                letter-spacing: 3px;
-            }
+            h1 { font-size: 2.2rem; letter-spacing: 4px; }
+            header { flex-direction: column; gap: 20px; margin-bottom: 24px; }
+            .header-btn { position: static; transform: none; }
+            body { padding: 40px 0; }
+            .grid-container:hover .quiz-table, .carousel-track:hover .quiz-table { opacity: 1; transform: none; }
+            .grid-container .quiz-table:hover, .carousel-track .quiz-table:hover { transform: none; }
+            .category-section { margin-bottom: 40px; }
+            .category-heading { font-size: 1.1rem; }
+            .carousel-wrapper { padding: 0 35px; }
+            .carousel-track .quiz-table { flex: 0 0 100%; max-width: 100%; }
+            .carousel-btn { font-size: 1.6rem; width: 30px; }
+            [data-sec-category="mostly"] .category-heading { font-size: 1.2rem; letter-spacing: 4px; }
+            .loader-content { font-size: 1.1rem; letter-spacing: 3px; }
+        }
+        
+        .category-section[data-sec-category="preferiti"] {
+            width: 92%;
+            max-width: 1600px;
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
 
-    <!-- INTERFACCIA COMPLETA: SCHERMATA DI CARICAMENTO DI 1 SECONDO -->
+    <div id="hardcore-bg-text">HARDCORE MODE</div>
+    <div id="animation-overlay"></div>
+
     <div id="loader">
         <div class="loader-content">loading quizzettini...</div>
     </div>
 
     <header>
+        <button class="header-btn daily-quiz-btn" id="dailyQuizBtn">Daily Quiz 🎲</button>
         <h1>Quizzettini</h1>
-        <button class="theme-toggle-btn" id="themeBtn" aria-label="Cambia modalità">
+        <button class="header-btn theme-toggle-btn" id="themeBtn" aria-label="Cambia modalità">
             <div class="toggle-icon"></div>
         </button>
     </header>
+
+    <div class="counter-container">
+        <span>Completati oggi: <span id="completed-count">0</span> / <span id="total-count">0</span></span>
+    </div>
 
     <div class="search-container">
         <input type="text" id="searchBar" placeholder="Trova il tuo quizzettino..." autocomplete="off">
     </div>
 
-    <!-- Filtri Categorie -->
     <div class="filter-container">
         <button class="filter-btn active" data-filter="all">Tutti</button>
+        <button class="filter-btn" data-filter="preferiti">★ Preferiti</button>
         <button class="filter-btn" data-filter="parole">Parole</button>
         <button class="filter-btn" data-filter="geo">Geografia</button>
         <button class="filter-btn" data-filter="logica">Logica & Math</button>
         <button class="filter-btn" data-filter="pop">Pop & Sport</button>
     </div>
 
+    <div class="category-section" data-sec-category="preferiti" style="display: none;">
+        <h2 class="category-heading">I Tuoi Preferiti</h2>
+        <div class="grid-container" id="favorites-grid"></div>
+    </div>
+
     <!-- ================= CATEGORIA: PAROLE ================= -->
     <div class="category-section" data-sec-category="parole">
         <h2 class="category-heading">Parole</h2>
         <div class="grid-container">
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="parolachiave" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔑</span>
                         <div class="quiz-title">ParolaChiave</div>
                     </td>
@@ -609,10 +786,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="wordle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🟩</span>
                         <div class="quiz-title">Wordle</div>
                     </td>
@@ -623,10 +804,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="wordleit" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🇮🇹</span>
                         <div class="quiz-title">Wordle IT</div>
                     </td>
@@ -637,10 +822,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="dontwordle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">❌</span>
                         <div class="quiz-title">Don't Wordle</div>
                     </td>
@@ -651,10 +840,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="unwordle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔄</span>
                         <div class="quiz-title">Unwordle</div>
                     </td>
@@ -665,10 +858,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="word500" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">💯</span>
                         <div class="quiz-title">Word500</div>
                     </td>
@@ -679,10 +876,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="letterle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔤</span>
                         <div class="quiz-title">Letterle</div>
                     </td>
@@ -693,10 +894,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="octordle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🐙</span>
                         <div class="quiz-title">Octordle</div>
                     </td>
@@ -707,10 +912,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="sedecordle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">💥</span>
                         <div class="quiz-title">Sedecordle</div>
                     </td>
@@ -721,10 +930,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="duotrigordle" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔑</span>
                         <div class="quiz-title">Duotrigordle</div>
                     </td>
@@ -735,10 +948,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="contexto" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🧠</span>
                         <div class="quiz-title">Contexto</div>
                     </td>
@@ -749,10 +966,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="frasefortunata" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🍀</span>
                         <div class="quiz-title">FraseFortunata</div>
                     </td>
@@ -763,10 +984,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="foximax" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🦊</span>
                         <div class="quiz-title">Foximax</div>
                     </td>
@@ -777,10 +1002,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="glyph" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔣</span>
                         <div class="quiz-title">Glyph</div>
                     </td>
@@ -791,10 +1020,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="parole">
+            <table class="quiz-table" data-id="lascala" data-category="parole">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-parole">Parole</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-parole">Parole</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📐</span>
                         <div class="quiz-title">LaScala</div>
                     </td>
@@ -811,10 +1044,14 @@
     <div class="category-section" data-sec-category="geo">
         <h2 class="category-heading">Geografia</h2>
         <div class="grid-container">
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="flagle" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🏴</span>
                         <div class="quiz-title">Flagle</div>
                     </td>
@@ -825,10 +1062,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="globle" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🌍</span>
                         <div class="quiz-title">Globle</div>
                     </td>
@@ -839,10 +1080,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="neighborle" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🗺️</span>
                         <div class="quiz-title">Neighborle</div>
                     </td>
@@ -853,10 +1098,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="geogame" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📍</span>
                         <div class="quiz-title">GeoGame</div>
                     </td>
@@ -867,10 +1116,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="geotrivia" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📍</span>
                         <div class="quiz-title">GeoTrivia</div>
                     </td>
@@ -881,10 +1134,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="georiddle" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🧩</span>
                         <div class="quiz-title">GeoRiddle</div>
                     </td>
@@ -895,10 +1152,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="timeguessr" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📸</span>
                         <div class="quiz-title">TimeGuessr</div>
                     </td>
@@ -909,10 +1170,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="geo">
+            <table class="quiz-table" data-id="foodguessr" data-category="geo">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-geo">Geografia</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-geo">Geografia</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🍔</span>
                         <div class="quiz-title">FoodGuessr</div>
                     </td>
@@ -929,10 +1194,14 @@
     <div class="category-section" data-sec-category="logica">
         <h2 class="category-heading">Logica & Math</h2>
         <div class="grid-container">
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="angle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📐</span>
                         <div class="quiz-title">Angle</div>
                     </td>
@@ -943,24 +1212,32 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="crononews" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">⏳</span>
                         <div class="quiz-title">CronoNews</div>
                     </td>
                     <td class="col-info">
-                        <div class="quiz-desc">Ordina gli eventi storici e le notizie nel tempo. Riesci a indovinare l'anno esatto?</div>
+                        <div class="quiz-desc">Ordina gli eventi storici e las notizie nel tempo. Riesci a indovinare l'anno esatto?</div>
                     </td>
                     <td class="col-action"><a href="https://www.ed0.it/quiz/crononews/" target="_blank" class="play-btn">PLAY</a></td>
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="connections" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🟪</span>
                         <div class="quiz-title">Connections</div>
                     </td>
@@ -971,10 +1248,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="nerdle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔢</span>
                         <div class="quiz-title">Nerdle</div>
                     </td>
@@ -985,10 +1266,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="chessdaily" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">👑</span>
                         <div class="quiz-title">ChessDaily</div>
                     </td>
@@ -999,10 +1284,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="timedle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">⏱️</span>
                         <div class="quiz-title">Timedle</div>
                     </td>
@@ -1013,10 +1302,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="talldle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📏</span>
                         <div class="quiz-title">Talldle</div>
                     </td>
@@ -1027,10 +1320,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="elementle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🧪</span>
                         <div class="quiz-title">Elementle</div>
                     </td>
@@ -1041,10 +1338,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="dialed" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📞</span>
                         <div class="quiz-title">Dialed</div>
                     </td>
@@ -1055,10 +1356,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="cutle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">✂️</span>
                         <div class="quiz-title">Cutle</div>
                     </td>
@@ -1069,10 +1374,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="birthdayle" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🎂</span>
                         <div class="quiz-title">Birthdayle</div>
                     </td>
@@ -1083,10 +1392,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="logica">
+            <table class="quiz-table" data-id="guessage" data-category="logica">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-logica">Logica & Math</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-logica">Logica & Math</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">👴</span>
                         <div class="quiz-title">GuessAge</div>
                     </td>
@@ -1103,10 +1416,14 @@
     <div class="category-section" data-sec-category="pop">
         <h2 class="category-heading">Pop & Sport</h2>
         <div class="grid-container">
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="pokedle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔴</span>
                         <div class="quiz-title">Pokedle</div>
                     </td>
@@ -1117,10 +1434,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="pokedoku" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🃏</span>
                         <div class="quiz-title">Pokedoku</div>
                     </td>
@@ -1131,10 +1452,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="minecraftle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🧱</span>
                         <div class="quiz-title">Minecraftle</div>
                     </td>
@@ -1145,10 +1470,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="brickdle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📦</span>
                         <div class="quiz-title">Brickdle</div>
                     </td>
@@ -1159,10 +1488,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="spotle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🎵</span>
                         <div class="quiz-title">Spotle</div>
                     </td>
@@ -1173,10 +1506,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="bandle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🎸</span>
                         <div class="quiz-title">Bandle</div>
                     </td>
@@ -1187,10 +1524,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="artistle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">👩‍🎤</span>
                         <div class="quiz-title">Artistle</div>
                     </td>
@@ -1201,10 +1542,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="songless" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🔇</span>
                         <div class="quiz-title">Songless</div>
                     </td>
@@ -1215,24 +1560,32 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="futbol11" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">⚽</span>
                         <div class="quiz-title">Futbol11</div>
                     </td>
                     <td class="col-info">
-                        <div class="quiz-desc">Schiera e indovina la formazione calcistica ideale incrociando i trasferimenti storici.</div>
+                        <div class="quiz-desc">Schiera e indovina la formatione calcistica ideale incrociando i trasferimenti storici.</div>
                     </td>
                     <td class="col-action"><a href="https://futbol-11.com/" target="_blank" class="play-btn">PLAY</a></td>
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="football" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🏆</span>
                         <div class="quiz-title">Football</div>
                     </td>
@@ -1243,10 +1596,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="hardgolf" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">⛳</span>
                         <div class="quiz-title">HardGolf</div>
                     </td>
@@ -1257,10 +1614,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="auction" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🖼️</span>
                         <div class="quiz-title">Auction</div>
                     </td>
@@ -1271,10 +1632,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="rankdle" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📊</span>
                         <div class="quiz-title">Rankdle</div>
                     </td>
@@ -1285,10 +1650,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="higherlower" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">📈</span>
                         <div class="quiz-title">HigherLower</div>
                     </td>
@@ -1299,10 +1668,14 @@
                 </tr>
             </table>
 
-            <table class="quiz-table" data-category="pop">
+            <table class="quiz-table" data-id="totoquiz" data-category="pop">
                 <tr>
                     <td class="col-header">
-                        <span class="category-tag tag-pop">Pop & Sport</span>
+                        <div class="category-tag-container">
+                            <button class="done-btn">✓</button>
+                            <span class="category-tag tag-pop">Pop & Sport</span>
+                            <button class="fav-btn">★</button>
+                        </div>
                         <span class="card-icon">🎯</span>
                         <div class="quiz-title">TotoQuiz</div>
                     </td>
@@ -1315,238 +1688,78 @@
         </div>
     </div>
 
-    <!-- ================= CATEGORIA: MOSTLY PLAYED (CAROSELLO RUOTA AGGIORNATO CON SFONDO FOOTER) ================= -->
+    <!-- SEZIONE HARDCORE ARCHIVE (STRUTTURA INDIPENDENTE) -->
+    <div class="category-section" data-sec-category="hardcore-sec" id="hardcoreSection" style="display:none;">
+        <h2 class="category-heading">HARDCORE ARCHIVE</h2>
+        <div class="grid-container" id="hardcore-grid"></div>
+    </div>
+
+    <!-- MOSTLY PLAYED -->
     <div class="category-section" data-sec-category="mostly">
         <h2 class="category-heading">Mostly Played</h2>
         <div class="carousel-wrapper">
             <button class="carousel-btn prev" id="carouselPrev">&#8592;</button>
             <div class="carousel-container">
-                <div class="carousel-track" id="carouselTrack">
-                    
-                    <!-- ANGLE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-logica">Logica & Math</span>
-                                <span class="card-icon">📐</span>
-                                <div class="quiz-title">Angle</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Indovina l'angolo geometrico corretto basandoti sui suggerimenti visivi quotidiani.</div>
-                            </td>
-                            <td class="col-action"><a href="https://angle.wtf/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- PAROLACHIAVE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-parole">Parole</span>
-                                <span class="card-icon">🔑</span>
-                                <div class="quiz-title">ParolaChiave</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Trova la parola misteriosa nascosta che collega logica, intuito ed enigmistica.</div>
-                            </td>
-                            <td class="col-action"><a href="https://www.ed0.it/quiz/parolachiave/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- WORDLE IT -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-parole">Parole</span>
-                                <span class="card-icon">🇮🇹</span>
-                                <div class="quiz-title">Wordle IT</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">La versione localizzata in lingua italiana del classico rompicapo di parole quotidiano.</div>
-                            </td>
-                            <td class="col-action"><a href="https://pietroppeter.github.io/wordle-it/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- FLAGLE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-geo">Geografia</span>
-                                <span class="card-icon">🏴</span>
-                                <div class="quiz-title">Flagle</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Indovina la bandiera misteriosa del giorno scoprendo una tessera alla volta.</div>
-                            </td>
-                            <td class="col-action"><a href="https://flagle-game.com/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- GLOBLE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-geo">Geografia</span>
-                                <span class="card-icon">🌍</span>
-                                <div class="quiz-title">Globle</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Trova la nazione misteriosa globale sfruttando i colori di prossimità sul mappamondo.</div>
-                            </td>
-                            <td class="col-action"><a href="https://globle-game.com/game" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- NEIGHBORLE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-geo">Geografia</span>
-                                <span class="card-icon">🗺️</span>
-                                <div class="quiz-title">Neighborle</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Indovina tutti i paesi confinanti dello stato selezionato senza commettere errori.</div>
-                            </td>
-                            <td class="col-action"><a href="https://neighborle.com/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- CRONONEWS -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-logica">Logica & Math</span>
-                                <span class="card-icon">⏳</span>
-                                <div class="quiz-title">CronoNews</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Ordina gli eventi storici e le notizie nel tempo. Riesci a indovinare l'anno esatto?</div>
-                            </td>
-                            <td class="col-action"><a href="https://www.ed0.it/quiz/crononews/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- CHESSDAILY -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-logica">Logica & Math</span>
-                                <span class="card-icon">👑</span>
-                                <div class="quiz-title">ChessDaily</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Risolvi il puzzle tattico giornaliero ufficiale sulla piattaforma Chess.com.</div>
-                            </td>
-                            <td class="col-action"><a href="https://www.chess.com/daily" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- DIALED -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-logica">Logica & Math</span>
-                                <span class="card-icon">📞</span>
-                                <div class="quiz-title">Dialed</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Risolvi le connessioni logiche giornaliere proposte in questa interfaccia ultra-pulita.</div>
-                            </td>
-                            <td class="col-action"><a href="https://dialed.gg/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- SPOTLE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-pop">Pop & Sport</span>
-                                <span class="card-icon">🎵</span>
-                                <div class="quiz-title">Spotle</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Indovina l'artista misterioso basandoti su generi, popolarità e dati di ascolto.</div>
-                            </td>
-                            <td class="col-action"><a href="https://spotle.io/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- BANDLE -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-pop">Pop & Sport</span>
-                                <span class="card-icon">🎸</span>
-                                <div class="quiz-title">Bandle</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Ascolta la traccia instrumental che si arricchisce e indovina la canzone corretta.</div>
-                            </td>
-                            <td class="col-action"><a href="https://bandle.app/menu" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- SONGLESS -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-pop">Pop & Sport</span>
-                                <span class="card-icon">🔇</span>
-                                <div class="quiz-title">Songless</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Indovina la traccia musicale senza traccia audio, sfruttando solo indizi grafici e testuali.</div>
-                            </td>
-                            <td class="col-action"><a href="https://lessgames.com/songless" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                    <!-- FUTBOL11 -->
-                    <table class="quiz-table" data-category="mostly">
-                        <tr>
-                            <td class="col-header">
-                                <span class="category-tag tag-pop">Pop & Sport</span>
-                                <span class="card-icon">⚽</span>
-                                <div class="quiz-title">Futbol11</div>
-                            </td>
-                            <td class="col-info">
-                                <div class="quiz-desc">Schiera e indovina la formazione calcistica ideale incrociando i trasferimenti storici.</div>
-                            </td>
-                            <td class="col-action"><a href="https://futbol-11.com/" target="_blank" class="play-btn">PLAY</a></td>
-                        </tr>
-                    </table>
-
-                </div>
+                <div class="carousel-track" id="carouselTrack"></div>
             </div>
             <button class="carousel-btn next" id="carouselNext">&#8594;</button>
         </div>
     </div>
 
     <script>
-        // Verifico e applico immediatamente il tema salvato prima del caricamento per non causare flash bianchi/neri
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+        }
+
+        function getDailyQuizIndex(totalCount) {
+            const d = new Date();
+            const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+            return dayOfYear % totalCount;
+        }
+
+        const todayStr = getTodayString();
+        if (localStorage.getItem('quizzettini_date') !== todayStr) {
+            localStorage.setItem('quizzettini_date', todayStr);
+            localStorage.setItem('quizzettini_completed', JSON.stringify([]));
+        }
+
+        let completedQuiz = JSON.parse(localStorage.getItem('quizzettini_completed')) || [];
+        let favorites = JSON.parse(localStorage.getItem('quizzettini_favorites')) || [];
+
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
 
-        // FEATURE AGGIUNTIVA: GESTIONE TIMER E RIMOZIONE SCHERMATA DI CARICAMENTO
+        // DATABASE COMPLETO DEI 10 GIOCHI ESCLUSIVI PER LA HARDCORE MODE
+        const hardcoreDb = [
+            { id: 'timeguessr', title: 'TimeGuessr', icon: '📸', desc: 'Indovina dove e quando è stata scattata una serie di fotografie storiche.', url: 'https://timeguessr.com/' },
+            { id: 'georiddle', title: 'GeoRiddle', icon: '🧩', desc: 'Risolvi gli enigmi geografici del giorno decifrando indizi complessi e dettagliati.', url: 'https://georiddle.org/' },
+            { id: 'dialed', title: 'Dialed', icon: '📞', desc: 'Risolvi le connessioni logiche giornaliere proposte in questa interfaccia ultra-pulita.', url: 'https://dialed.gg/' },
+            { id: 'sedecordle', title: 'Sedecordle', icon: '💥', desc: 'Sfida estrema per esperti di parole: 16 griglie Wordle da risolvere in parallelo.', url: 'https://www.sedecordle.com/?mode=daily' },
+            { id: 'duotrigordle', title: 'Duotrigordle', icon: '🔑', desc: 'La follia linguistica definitiva: 32 parole da indovinare contemporaneamente.', url: 'https://duotrigordle.com/game/daily/normal' },
+            { id: 'contexto', title: 'Contexto', icon: '🧠', desc: 'Trova la parola misteriosa guidato da un algoritmo che calcola la somiglianza contestuale.', url: 'https://contexto.me/en/' },
+            { id: 'glyph', title: 'Glyph', icon: '🔣', desc: 'Trova la combinazione misteriosa decifrando simboli grafici e glifi minimalisti.', url: 'https://glyph.today/' },
+            { id: 'chessdaily', title: 'ChessDaily', icon: '👑', desc: 'Risolvi il puzzle tattico giornaliero ufficiale sulla piattaforma Chess.com.', url: 'https://www.chess.com/daily' },
+            { id: 'mapgame', title: 'MapGame', icon: '🗺️', desc: 'Metti alla prova i confini globali indovinando le nazioni corrette direttamente sulla mappa.', url: 'https://mapgame.net/' },
+            { id: 'globlecapitals', title: 'Globle Capitals', icon: '🏛️', desc: 'Trova la capitale misteriosa mondiale sfruttando la distanza chilometrica dinamica.', url: 'https://globle-capitals.com/game' }
+        ];
+
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const loader = document.getElementById('loader');
                 if (loader) {
-                    loader.style.opacity = '0'; // Avvia dissolvenza fluida via CSS (0.5s)
-                    setTimeout(() => {
-                        loader.remove(); // Rimuove definitivamente l'elemento per non interferire con i clic
-                    }, 500);
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 500);
                 }
-            }, 1000); // 1 Secondo preciso di stop per rendere il caricamento fluido
+            }, 1000);
+            
+            initPortalStates();
+            setupCarousel();
+            updateCounter();
         });
 
-        // Gestione Cambio Tema fluido
-        const themeBtn = document.getElementById('themeBtn');
-
-        themeBtn.addEventListener('click', () => {
+        document.getElementById('themeBtn').addEventListener('click', () => {
             let currentTheme = document.documentElement.getAttribute('data-theme');
             if (currentTheme === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
@@ -1557,22 +1770,279 @@
             }
         });
 
-        // LOGICA LOGISTICA CAROSELLO A RUOTA CONTINUA (FLUIDA)
+        function triggerScreenAnimation(type) {
+            const overlay = document.getElementById('animation-overlay');
+            overlay.className = ''; 
+            
+            if(type === 'plus') {
+                overlay.textContent = '+1';
+                overlay.classList.add('animate-plus');
+            } else {
+                overlay.textContent = ':(';
+                overlay.classList.add('animate-minus');
+            }
+
+            const newOverlay = overlay.cloneNode(true);
+            overlay.parentNode.replaceChild(newOverlay, overlay);
+        }
+
+        function handleCompletionToggle(id) {
+            if (completedQuiz.includes(id)) {
+                completedQuiz = completedQuiz.filter(qId => qId !== id);
+                triggerScreenAnimation('minus');
+                syncCardState(id, 'completed', false);
+            } else {
+                completedQuiz.push(id);
+                triggerScreenAnimation('plus');
+                syncCardState(id, 'completed', true);
+            }
+            localStorage.setItem('quizzettini_completed', JSON.stringify(completedQuiz));
+            updateCounter();
+        }
+
+        function initPortalStates() {
+            const allCards = document.querySelectorAll('.grid-container:not(#hardcore-grid):not(#favorites-grid) .quiz-table');
+            document.getElementById('total-count').textContent = allCards.length;
+
+            allCards.forEach(card => {
+                const id = card.getAttribute('data-id');
+
+                if (completedQuiz.includes(id)) {
+                    card.classList.add('completed');
+                }
+
+                if (favorites.includes(id)) {
+                    card.classList.add('is-favorite');
+                }
+
+                card.querySelector('.done-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleCompletionToggle(id);
+                });
+
+                card.querySelector('.fav-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let favs = JSON.parse(localStorage.getItem('quizzettini_favorites')) || [];
+                    if (favs.includes(id)) {
+                        favs = favs.filter(fId => fId !== id);
+                        syncCardState(id, 'is-favorite', false);
+                    } else {
+                        favs.push(id);
+                        syncCardState(id, 'is-favorite', true);
+                    }
+                    localStorage.setItem('quizzettini_favorites', JSON.stringify(favs));
+                    favorites = favs;
+                    
+                    buildFavoritesGrid();
+                    filterQuizzes();
+                });
+            });
+
+            buildFavoritesGrid();
+        }
+
+        function syncCardState(id, className, add = true) {
+            const targets = document.querySelectorAll(`.quiz-table[data-id="${id}"]`);
+            targets.forEach(t => {
+                if (add) t.classList.add(className);
+                else t.classList.remove(className);
+            });
+        }
+
+        function updateCounter() {
+            document.getElementById('completed-count').textContent = completedQuiz.length;
+        }
+
+        function buildFavoritesGrid() {
+            const favGrid = document.getElementById('favorites-grid');
+            favGrid.innerHTML = '';
+            
+            favorites.forEach(id => {
+                const sourceCard = document.querySelector(`.grid-container:not(#hardcore-grid):not(#favorites-grid) .quiz-table[data-id="${id}"]`);
+                if (sourceCard) {
+                    const clone = sourceCard.cloneNode(true);
+                    
+                    clone.querySelector('.done-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        handleCompletionToggle(id);
+                    });
+
+                    clone.querySelector('.fav-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let favs = JSON.parse(localStorage.getItem('quizzettini_favorites')) || [];
+                        favs = favs.filter(fId => fId !== id);
+                        localStorage.setItem('quizzettini_favorites', JSON.stringify(favs));
+                        favorites = favs;
+                        
+                        syncCardState(id, 'is-favorite', false);
+                        buildFavoritesGrid();
+                        filterQuizzes();
+                    });
+
+                    favGrid.appendChild(clone);
+                }
+            });
+        }
+
+        document.getElementById('dailyQuizBtn').addEventListener('click', () => {
+            const allCards = Array.from(document.querySelectorAll('.grid-container:not(#hardcore-grid):not(#favorites-grid) .quiz-table'));
+            if (allCards.length > 0) {
+                const fixedIndex = getDailyQuizIndex(allCards.length);
+                const dailyCard = allCards[fixedIndex];
+                const playUrl = dailyCard.querySelector('.play-btn').getAttribute('href');
+                
+                window.open(playUrl, '_blank');
+            }
+        });
+
+        let isHardcoreModeActive = false;
+
+        // RENDER GESTITO DALL'HARDWARE INDIPENDENTE
+        function buildHardcoreGrid() {
+            const hardcoreGrid = document.getElementById('hardcore-grid');
+            hardcoreGrid.innerHTML = '';
+            
+            hardcoreDb.forEach(game => {
+                const table = document.createElement('table');
+                table.className = 'quiz-table';
+                table.setAttribute('data-id', game.id);
+                table.setAttribute('data-category', 'hardcore-game');
+                
+                if (completedQuiz.includes(game.id)) table.classList.add('completed');
+                if (favorites.includes(game.id)) table.classList.add('is-favorite');
+
+                table.innerHTML = `
+                    <tr>
+                        <td class="col-header">
+                            <div class="category-tag-container">
+                                <button class="done-btn">✓</button>
+                                <span class="category-tag tag-hardcore">HARDCORE</span>
+                                <button class="fav-btn">★</button>
+                            </div>
+                            <span class="card-icon">${game.icon}</span>
+                            <div class="quiz-title">${game.title}</div>
+                        </td>
+                        <td class="col-info">
+                            <div class="quiz-desc">${game.desc}</div>
+                        </td>
+                        <td class="col-action"><a href="${game.url}" target="_blank" class="play-btn">PLAY</a></td>
+                    </tr>
+                `;
+
+                table.querySelector('.done-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleCompletionToggle(game.id);
+                    if(completedQuiz.includes(game.id)) table.classList.add('completed');
+                    else table.classList.remove('completed');
+                });
+
+                table.querySelector('.fav-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let favs = JSON.parse(localStorage.getItem('quizzettini_favorites')) || [];
+                    if (favs.includes(game.id)) {
+                        favs = favs.filter(fId => fId !== game.id);
+                        table.classList.remove('is-favorite');
+                        syncCardState(game.id, 'is-favorite', false);
+                    } else {
+                        favs.push(game.id);
+                        table.classList.add('is-favorite');
+                        syncCardState(game.id, 'is-favorite', true);
+                    }
+                    localStorage.setItem('quizzettini_favorites', JSON.stringify(favs));
+                    favorites = favs;
+                    buildFavoritesGrid();
+                });
+
+                hardcoreGrid.appendChild(table);
+            });
+        }
+
+        function activateHardcoreMode() {
+            isHardcoreModeActive = true;
+            document.body.classList.add('hardcore-glitch');
+            
+            setTimeout(() => {
+                document.body.classList.remove('hardcore-glitch');
+                document.body.classList.add('hardcore-mode');
+                
+                document.querySelector('.filter-container').style.display = 'none';
+                document.querySelector('.category-section[data-sec-category="mostly"]').style.display = 'none';
+                
+                buildHardcoreGrid();
+                document.getElementById('hardcoreSection').style.display = 'flex';
+                searchBar.value = ''; 
+            }, 1500);
+        }
+
+        function deactivateHardcoreMode() {
+            isHardcoreModeActive = false;
+            document.body.classList.add('hardcore-glitch');
+            
+            setTimeout(() => {
+                document.body.classList.remove('hardcore-glitch');
+                document.body.classList.remove('hardcore-mode');
+                
+                document.querySelector('.filter-container').style.display = 'flex';
+                document.querySelector('.category-section[data-sec-category="mostly"]').style.display = 'flex';
+                
+                document.getElementById('hardcoreSection').style.display = 'none';
+                
+                searchBar.value = '';
+                filterQuizzes();
+                initPortalStates();
+            }, 1500);
+        }
+
+        // CAROSELLO
         const track = document.getElementById('carouselTrack');
         const prevBtn = document.getElementById('carouselPrev');
         const nextBtn = document.getElementById('carouselNext');
         
         let currentIndex = 0;
-        let originalCards = Array.from(track.children);
+        let originalCards = [];
         let itemsPerSlide = getItemsPerSlide();
 
         function setupCarousel() {
+            const idsMostly = ['angle', 'parolachiave', 'wordleit', 'flagle', 'globle', 'neighborle', 'crononews', 'chessdaily', 'dialed', 'spotle', 'bandle', 'songless', 'futbol11'];
+            originalCards = [];
+            
+            idsMostly.forEach(id => {
+                const cardNode = document.querySelector(`.grid-container:not(#hardcore-grid):not(#favorites-grid) .quiz-table[data-id="${id}"]`);
+                if(cardNode) originalCards.push(cardNode.cloneNode(true));
+            });
+
+            if(originalCards.length === 0) return;
             track.innerHTML = '';
             
             originalCards.slice(-itemsPerSlide).forEach(card => track.appendChild(card.cloneNode(true)));
             originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
             originalCards.slice(0, itemsPerSlide).forEach(card => track.appendChild(card.cloneNode(true)));
             
+            Array.from(track.children).forEach(card => {
+                const id = card.getAttribute('data-id');
+                
+                card.querySelector('.done-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleCompletionToggle(id);
+                });
+
+                card.querySelector('.fav-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let favs = JSON.parse(localStorage.getItem('quizzettini_favorites')) || [];
+                    if (favs.includes(id)) {
+                        favs = favs.filter(fId => fId !== id);
+                        syncCardState(id, 'is-favorite', false);
+                    } else {
+                        favs.push(id);
+                        syncCardState(id, 'is-favorite', true);
+                    }
+                    localStorage.setItem('quizzettini_favorites', JSON.stringify(favs));
+                    favorites = favs;
+                    buildFavoritesGrid();
+                    filterQuizzes();
+                });
+            });
+
             currentIndex = itemsPerSlide;
             updateCarouselPosition(false);
         }
@@ -1584,6 +2054,7 @@
         }
 
         function updateCarouselPosition(animate = true) {
+            if(track.children.length === 0) return;
             const cardWidth = track.children[0].getBoundingClientRect().width;
             const gap = 24; 
             const offset = currentIndex * (cardWidth + gap);
@@ -1597,6 +2068,7 @@
         }
 
         nextBtn.addEventListener('click', () => {
+            if(originalCards.length === 0) return;
             currentIndex++;
             updateCarouselPosition(true);
             
@@ -1609,6 +2081,7 @@
         });
 
         prevBtn.addEventListener('click', () => {
+            if(originalCards.length === 0) return;
             currentIndex--;
             updateCarouselPosition(true);
             
@@ -1630,13 +2103,9 @@
             }
         });
 
-        setupCarousel();
-
-        // GESTIONE FILTRI CATEGORIE E RICERCA COMBINATA
         const searchBar = document.getElementById('searchBar');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const sections = document.querySelectorAll('.category-section');
-        
         let currentCategory = 'all';
 
         filterBtns.forEach(btn => {
@@ -1648,24 +2117,65 @@
             });
         });
 
-        searchBar.addEventListener('input', filterQuizzes);
+        searchBar.addEventListener('input', () => {
+            const inputVal = searchBar.value.trim().toUpperCase();
+            
+            if (inputVal === 'HARDCORE' && !isHardcoreModeActive) {
+                activateHardcoreMode();
+            } else if (inputVal === 'STOP' && isHardcoreModeActive) {
+                deactivateHardcoreMode();
+            } else if (!isHardcoreModeActive) {
+                filterQuizzes();
+            }
+        });
 
         function filterQuizzes() {
+            if(isHardcoreModeActive) return;
             const searchTerm = searchBar.value.toLowerCase().trim();
 
             sections.forEach(section => {
                 const secCategory = section.getAttribute('data-sec-category');
                 
+                if (secCategory === 'hardcore-sec') return; // Saltato autonomamente
+
                 if (secCategory === 'mostly') {
                     const carouselWrapper = section.querySelector('.carousel-wrapper');
-                    const matchesCategorySelection = currentCategory === 'all';
-                    
-                    if (matchesCategorySelection && searchTerm === "") {
+                    if (currentCategory === 'all' && searchTerm === "") {
                         section.style.display = 'flex';
                         carouselWrapper.style.display = 'flex';
                     } else {
                         section.style.display = 'none';
                     }
+                    return;
+                }
+
+                if (secCategory === 'preferiti') {
+                    if (currentCategory === 'preferiti' && favorites.length > 0) {
+                        section.style.display = 'flex';
+                        
+                        const favCards = section.querySelectorAll('.quiz-table');
+                        let visibleFavs = 0;
+                        favCards.forEach(card => {
+                            const title = card.querySelector('.quiz-title').textContent.toLowerCase();
+                            const desc = card.querySelector('.quiz-desc').textContent.toLowerCase();
+                            if (title.includes(searchTerm) || desc.includes(searchTerm)) {
+                                card.style.display = 'table';
+                                visibleFavs++;
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                        if(visibleFavs === 0 && searchTerm !== "") {
+                            section.style.display = 'none';
+                        }
+                    } else {
+                        section.style.display = 'none';
+                    }
+                    return;
+                }
+
+                if (currentCategory === 'preferiti') {
+                    section.style.display = 'none';
                     return;
                 }
 
@@ -1694,6 +2204,5 @@
             });
         }
     </script>
-
 </body>
 </html>
